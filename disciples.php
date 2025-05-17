@@ -1,128 +1,52 @@
-<?php 
-require_once 'header.php';
-
-// Данные для таблицы
-$disciplines = [
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-21-2', '109/110', '3/20234'],
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-21-4', '109/110', '3/20234'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-21-2', '37', '102'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-21-4', '37', '102'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-20-2', '60', '180'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-20-4', '60', '180'],
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-20-2', '21', '84'],
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-20-4', '21', '84'],
-    ['МДК.02.02 Инструментальные средства разработки ПО', 'ИСП-20-2', '23', '46'],
-    ['МДК.02.02 Инструментальные средства разработки ПО', 'ИСП-20-4', '23', '46'],
-    ['МДК.05.02 Разработка кода информационных систем', 'ИСВ-21-1', '87', '238'],
-    ['МДК.05.02 Разработка кода информационных систем', 'ИСВ-21-3', '94', '258'],
-    ['ОУЛ.08 Информатика', 'ИСВ-23-1', '2', '8'],
-    ['ОУЛ.08 Информатика', 'ИСВ-23-2', '2', '8']
-];
-?>
-<?php 
+<?php
 require_once 'header.php';
 require_once 'config/database.php';
 
-try {
-    $database = new Database();
-    $conn = $database->getConnection();
+$db = new Database();
+$stmt = $db->query("
+    SELECT 
+        s.name AS discipline, 
+        g.name AS group_name,
+        COUNT(p.id_program) AS topics,
+        SUM(tw.hours_total) AS hours
+    FROM subjects s
+    JOIN teachers_workload tw ON s.id_subjects = tw.id_subjects
+    JOIN `group` g ON tw.id_group = g.id_group
+    LEFT JOIN program p ON s.id_subjects = p.id_subjects AND g.id_group = p.id_group
+    GROUP BY s.name, g.name
+    ORDER BY s.name, g.name
+");
 
-    $query = "SELECT d.name AS discipline, g.name AS group_name, 
-              COUNT(p.id_program) AS topics, SUM(tw.hours_total) AS hours
-              FROM subjects d
-              JOIN teachers_workload tw ON d.id_subjects = tw.id_subjects
-              JOIN `group` g ON tw.id_group = g.id_group
-              LEFT JOIN program p ON d.id_subjects = p.id_subjects
-              GROUP BY d.name, g.name
-              ORDER BY d.name, g.name";
-
-    $stmt = $conn->prepare($query);
-    $stmt->execute();
-    $disciplines = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $error = "Ошибка загрузки данных: " . $e->getMessage();
-}
+$disciplines = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="content">
     <h1>Дисциплины</h1>
     
-    <?php if (isset($error)): ?>
-        <div class="alert"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Дисциплина</th>
-                <th>Группа</th>
-                <th>Темы</th>
-                <th>Часы</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($disciplines as $item): ?>
-            <tr>
-                <td><?= htmlspecialchars($item['discipline']) ?></td>
-                <td><?= htmlspecialchars($item['group_name']) ?></td>
-                <td><?= htmlspecialchars($item['topics']) ?></td>
-                <td><?= htmlspecialchars($item['hours']) ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Дисциплина</th>
+                    <th>Группа</th>
+                    <th>Темы</th>
+                    <th>Часы</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($disciplines as $i => $row): ?>
+                <tr>
+                    <td><?= $i + 1 ?></td>
+                    <td><?= htmlspecialchars($row['discipline']) ?></td>
+                    <td><?= htmlspecialchars($row['group_name']) ?></td>
+                    <td><?= htmlspecialchars($row['topics']) ?></td>
+                    <td><?= htmlspecialchars($row['hours']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <?php require_once 'footer.php'; ?>
-<div class="content">
-    <h1>Дисциплины</h1>
-    
-    <div class="filters">
-        <div class="filter-group">
-            <label for="discipline">Дисциплина:</label>
-            <select id="discipline">
-                <option value="">Все</option>
-                <option value="МДК.01.01">МДК.01.01</option>
-                <option value="МДК.01.03">МДК.01.03</option>
-                <option value="МДК.05.02">МДК.05.02</option>
-            </select>
-        </div>
-        
-        <div class="filter-group">
-            <label for="group">Группа:</label>
-            <select id="group">
-                <option value="">Все</option>
-                <option value="ИСП">ИСП</option>
-                <option value="ИСВ">ИСВ</option>
-            </select>
-        </div>
-        
-        <button id="applyFilters">Применить</button>
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>№п/п</th>
-                <th>Наименование</th>
-                <th>Группа</th>
-                <th>Занятий</th>
-                <th>Проведённых часов</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($disciplines as $i => $row): ?>
-            <tr>
-                <td><?= $i+1 ?></td>
-                <td><?= htmlspecialchars($row[0]) ?></td>
-                <td><?= htmlspecialchars($row[1]) ?></td>
-                <td><?= htmlspecialchars($row[2]) ?></td>
-                <td><?= htmlspecialchars($row[3]) ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
-</main>
-</body>
-</html>
