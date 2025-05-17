@@ -41,10 +41,10 @@
     </style>
 </head>
 <body>
-    <form action="auth.php" method="post">
+    <form action="disciples.php" method="post">
         <input type="text" placeholder="Логин" id="login">
         <input type="password" placeholder="Пароль" id="password">
-        <button type="submit" id="log_in">Авторизоваться</button>
+        <button type="submit" id="log_in" href="disciples.php">Авторизоваться</button>
     </form>
 </body>
 </html>
