@@ -19,7 +19,61 @@ $disciplines = [
     ['ОУЛ.08 Информатика', 'ИСВ-23-2', '2', '8']
 ];
 ?>
+<?php 
+require_once 'header.php';
+require_once 'config/database.php';
 
+try {
+    $database = new Database();
+    $conn = $database->getConnection();
+
+    $query = "SELECT d.name AS discipline, g.name AS group_name, 
+              COUNT(p.id_program) AS topics, SUM(tw.hours_total) AS hours
+              FROM subjects d
+              JOIN teachers_workload tw ON d.id_subjects = tw.id_subjects
+              JOIN `group` g ON tw.id_group = g.id_group
+              LEFT JOIN program p ON d.id_subjects = p.id_subjects
+              GROUP BY d.name, g.name
+              ORDER BY d.name, g.name";
+
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $disciplines = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $error = "Ошибка загрузки данных: " . $e->getMessage();
+}
+?>
+
+<div class="content">
+    <h1>Дисциплины</h1>
+    
+    <?php if (isset($error)): ?>
+        <div class="alert"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Дисциплина</th>
+                <th>Группа</th>
+                <th>Темы</th>
+                <th>Часы</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($disciplines as $item): ?>
+            <tr>
+                <td><?= htmlspecialchars($item['discipline']) ?></td>
+                <td><?= htmlspecialchars($item['group_name']) ?></td>
+                <td><?= htmlspecialchars($item['topics']) ?></td>
+                <td><?= htmlspecialchars($item['hours']) ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php require_once 'footer.php'; ?>
 <div class="content">
     <h1>Дисциплины</h1>
     
