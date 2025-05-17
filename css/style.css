@@ -1,0 +1,232 @@
+/* Базовые стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #9EA1A2;
+    color: #333;
+}
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Стили шапки (адаптивные) */
+header {
+    background-color: white;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.main-nav {
+    display: flex;
+    gap: 2vw;
+}
+
+.main-nav h1 {
+    font-size: clamp(14px, 1.2vw, 18px);
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #E41613;
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+.main-nav a:hover {
+    color: #980300;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    position: relative;
+}
+
+/* Стили контента */
+.content {
+    padding: 2%;
+    flex: 1;
+    background-color: white;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 2vh;
+    font-size: clamp(18px, 2vw, 24px);
+}
+
+.filters {
+    display: flex;
+    gap: 2vw;
+    margin-bottom: 3vh;
+    padding: 2vh 2vw;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.filter-group label {
+    margin-bottom: 0.5vh;
+    font-weight: bold;
+    font-size: clamp(14px, 1vw, 16px);
+}
+
+select, button {
+    padding: 1vh 1vw;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: clamp(14px, 1vw, 16px);
+}
+
+button {
+    background-color: #E41613;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    min-width: 120px;
+}
+
+button:hover {
+    background-color: #980300;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2vh;
+    font-size: clamp(12px, 1vw, 16px);
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 1.5vh 1vw;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Адаптивные точки */
+
+/* 1920px (ПК) */
+@media screen and (min-width: 1200px) {
+    .container {
+        max-width: 1920px;
+        margin: 0 auto;
+    }
+    
+    .filters {
+        flex-wrap: nowrap;
+    }
+    
+    .filter-group {
+        min-width: 220px;
+    }
+}
+
+/* 1024px (Планшет) */
+@media screen and (max-width: 1199px) and (min-width: 768px) {
+    header {
+        flex-direction: row;
+        padding: 15px 3%;
+    }
+    
+    .main-nav {
+        gap: 1.5vw;
+    }
+    
+    .filters {
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        min-width: 180px;
+    }
+    
+    table {
+        font-size: 14px;
+    }
+}
+
+/* 320px (Телефон) */
+@media screen and (max-width: 767px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 5%;
+    }
+    
+    .main-nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        padding-top: 15px;
+    }
+    
+    .main-nav.active {
+        display: flex;
+    }
+    
+    .menu-toggle {
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    .filters {
+        flex-direction: column;
+        gap: 2vh;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    button {
+        width: 100%;
+    }
+    
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    th, td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}
