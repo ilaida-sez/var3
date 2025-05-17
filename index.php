@@ -1,74 +1,50 @@
 <?php 
-require_once 'header.php';
-
-// Данные для таблицы
-$disciplines = [
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-21-2', '109/110', '3/20234'],
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-21-4', '109/110', '3/20234'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-21-2', '37', '102'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-21-4', '37', '102'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-20-2', '60', '180'],
-    ['МДК.01.03 Разработка мобильных приложений', 'ИСП-20-4', '60', '180'],
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-20-2', '21', '84'],
-    ['МДК.01.01 Разработка программных модулей', 'ИСП-20-4', '21', '84'],
-    ['МДК.02.02 Инструментальные средства разработки ПО', 'ИСП-20-2', '23', '46'],
-    ['МДК.02.02 Инструментальные средства разработки ПО', 'ИСП-20-4', '23', '46'],
-    ['МДК.05.02 Разработка кода информационных систем', 'ИСВ-21-1', '87', '238'],
-    ['МДК.05.02 Разработка кода информационных систем', 'ИСВ-21-3', '94', '258'],
-    ['ОУЛ.08 Информатика', 'ИСВ-23-1', '2', '8'],
-    ['ОУЛ.08 Информатика', 'ИСВ-23-2', '2', '8']
-];
+    if (isset($_POST['login']) && isset($_POST['password']) && isset($_POST['log_in'])){
+        
+    }
 ?>
-
-<div class="content">
-    <h1>Дисциплины</h1>
-    
-    <div class="filters">
-        <div class="filter-group">
-            <label for="discipline">Дисциплина:</label>
-            <select id="discipline">
-                <option value="">Все</option>
-                <option value="МДК.01.01">МДК.01.01</option>
-                <option value="МДК.01.03">МДК.01.03</option>
-                <option value="МДК.05.02">МДК.05.02</option>
-            </select>
-        </div>
-        
-        <div class="filter-group">
-            <label for="group">Группа:</label>
-            <select id="group">
-                <option value="">Все</option>
-                <option value="ИСП">ИСП</option>
-                <option value="ИСВ">ИСВ</option>
-            </select>
-        </div>
-        
-        <button id="applyFilters">Применить</button>
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>№п/п</th>
-                <th>Наименование</th>
-                <th>Группа</th>
-                <th>Занятий</th>
-                <th>Проведённых часов</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($disciplines as $i => $row): ?>
-            <tr>
-                <td><?= $i+1 ?></td>
-                <td><?= htmlspecialchars($row[0]) ?></td>
-                <td><?= htmlspecialchars($row[1]) ?></td>
-                <td><?= htmlspecialchars($row[2]) ?></td>
-                <td><?= htmlspecialchars($row[3]) ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
-</main>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <style>
+        body{
+            background-color: #9EA1A2;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1vw;
+            margin-top: 20vw;
+        }
+        input{
+            border:1px solid #E41613;
+            border-radius: 2vw;
+            background-color: white;
+            font-size: 2vw;
+            font-family: Arial;
+            padding: 1vw 2vw;
+        }
+        button{
+            border:none;
+            border-radius: 2vw;
+            background-color: #E41613;
+            font-size: 2vw;
+            font-family: Arial;
+            padding: 1vw 2vw;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <form action="auth.php" method="post">
+        <input type="text" placeholder="Логин" id="login">
+        <input type="password" placeholder="Пароль" id="password">
+        <button type="submit" id="log_in">Авторизоваться</button>
+    </form>
 </body>
 </html>
